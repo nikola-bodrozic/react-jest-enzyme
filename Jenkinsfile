@@ -59,13 +59,13 @@ pipeline {
       }
     }
 
-    // stage('Publish Image') {
-    //   steps {
-    //     withDockerRegistry(credentialsId: DOCKER_REGISTRY_CREDENTIALS, url: DOCKER_REGISTRY_URL) {
-    //       sh "docker push ${PROJECT_IMAGE}:${GIT_COMMIT}"
-    //     }
-    //   }
-    // }
+    stage('Publish Image') {
+      steps {
+        withDockerRegistry(credentialsId: DOCKER_REGISTRY_CREDENTIALS, url: DOCKER_REGISTRY_URL) {
+          sh "docker push ${PROJECT_IMAGE}:${GIT_COMMIT}"
+        }
+      }
+    }
   }
 
   post {
