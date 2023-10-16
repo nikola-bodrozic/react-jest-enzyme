@@ -51,6 +51,9 @@ pipeline {
         CI=true yarn test
         """
       }
+    }
+
+    stage('Build Image') {
       steps {
         sh "docker build -t ${PROJECT_IMAGE}:${GIT_COMMIT} ."
       }
