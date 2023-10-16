@@ -39,7 +39,7 @@ pipeline {
       }
     }
   
-    stage('Install dependancies') {
+    stage('Install dependancies test and lint') {
       agent {
         docker {
           image APP_IMAGE
@@ -47,28 +47,9 @@ pipeline {
       }
       steps {
         sh 'yarn install --network-timeout 3600000'
-      }
-    }
-
-    stage('Execute Tests') {
-      agent {
-        docker {
-          image APP_IMAGE
-        }
-      }
-      steps {
         sh 'CI=true yarn test'
-      }
-    }
+        sh 'yarn run lint'
 
-    stage('Linting') {
-      agent {
-        docker {
-          image APP_IMAGE
-        }
-      }
-      steps {
-        sh 'npm run lint'
       }
     }
 
