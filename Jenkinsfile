@@ -9,7 +9,7 @@ pipeline {
     DOCKER_REGISTRY_URL = "https://${DOCKER_REGISTRY}/v1/"
     PROJECT_IMAGE = "${DOCKER_REGISTRY}/${DOCKER_REGISTRY_USERNAME}/react-app"
 
-    APP_IMAGE = "node:16-alpine"
+    APP_IMAGE = "node:lts-alpine"
 
     GIT_COMMIT = ' '
   }
@@ -39,6 +39,17 @@ pipeline {
       }
     }
   
+    stage('Install dependancies') {
+      agent {
+        docker {
+          image APP_IMAGE
+        }
+      }
+      steps {
+        sh 'yarn install --network-timeout 3600000'
+      }
+    }
+
     stage('Execute Tests') {
       agent {
         docker {
@@ -46,31 +57,39 @@ pipeline {
         }
       }
       steps {
-        sh """
-        yarn install --network-timeout 3600000
-        CI=true yarn test
-        """
+        sh 'CI=true yarn test'
       }
     }
 
-    stage('Build Image') {
-      steps {
-        sh "docker build -t ${PROJECT_IMAGE}:${GIT_COMMIT} ."
-      }
-    }
-
-    stage('Publish Image') {
-      steps {
-        withDockerRegistry(credentialsId: DOCKER_REGISTRY_CREDENTIALS, url: DOCKER_REGISTRY_URL) {
-          sh "docker push ${PROJECT_IMAGE}:${GIT_COMMIT}"
+    stage('Linting') {
+      agent {
+        docker {
+          image APP_IMAGE
         }
       }
+      steps {
+        sh 'npm run lint'
+      }
     }
+
+    // stage('Build Image') {
+    //   steps {
+    //     sh "docker build -t ${PROJECT_IMAGE}:${GIT_COMMIT} ."
+    //   }
+    // }
+
+    // stage('Publish Image') {
+    //   steps {
+    //     withDockerRegistry(credentialsId: DOCKER_REGISTRY_CREDENTIALS, url: DOCKER_REGISTRY_URL) {
+    //       sh "docker push ${PROJECT_IMAGE}:${GIT_COMMIT}"
+    //     }
+    //   }
+    // }
   }
 
   post {
     success {
-      echo 'image is pushed'
+      echo 'done'
     }
     always {
       deleteDir()

@@ -4,6 +4,7 @@ import Main from './components/Main';
 
 class App extends Component {
   render() {
+    let badVar = "test"
     return (
       <div className="App">
         <header className="App-header">
