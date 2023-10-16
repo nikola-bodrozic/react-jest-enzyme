@@ -5,11 +5,6 @@ pipeline {
             args '-p 3000:3000'
         }
     }
-    environment {
-        CI = 'true'
-        HOME = '.'
-        npm_config_cache = 'npm-cache'
-    }
 
     environment {
         DOCKER_REGISTRY_CREDENTIALS = 'fc403e71-45cc-4962-a275-a2aad4d18e0b'
@@ -19,6 +14,9 @@ pipeline {
         PROJECT_IMAGE = "${DOCKER_REGISTRY}/${DOCKER_REGISTRY_USERNAME}/react-app"
 
         GIT_COMMIT = ' '
+
+        HOME = '.'
+        npm_config_cache = 'npm-cache'
     }
 
     stages {
@@ -55,7 +53,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing...'
-                sh 'npm test'
+                sh 'CI=true npm test'
             }
         }
         // stage('Publish Image') {
