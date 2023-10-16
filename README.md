@@ -10,7 +10,7 @@ This project shows how to:
 ## Start Docker stack with SonarQube
 
 ```shell
-docker-compose up
+docker-compose up # or docker compose up
 ```
 ## SonarQube setup
 
