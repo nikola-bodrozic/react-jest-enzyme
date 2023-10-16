@@ -39,17 +39,31 @@ pipeline {
       }
     }
   
-    stage('Install dependancies test and lint') {
+    stage('Execute Tests') {
       agent {
         docker {
           image APP_IMAGE
         }
       }
       steps {
-        sh 'yarn install --network-timeout 3600000'
-        sh 'CI=true yarn test'
-        sh 'yarn run lint'
-
+        sh """
+        yarn install --network-timeout 3600000
+        ls -lA
+        CI=true yarn test
+        """
+      }
+    }
+    stage('Execute lint') {
+      agent {
+        docker {
+          image APP_IMAGE
+        }
+      }
+      steps {
+        sh """
+        ls -lA
+        yarn run lint
+        """
       }
     }
 
